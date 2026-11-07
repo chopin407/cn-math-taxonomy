@@ -95,7 +95,7 @@
       const pending = families.filter(family => progress.mistakes.has(family.id)).length;
       card.append(
         el('h3', category.label),
-        el('p', category.description, 'practice-muted'),
+        el('p', families.map(family => family.label).join('、'), 'practice-muted'),
         el('p', `${accuracy(stats)} · 待巩固 ${pending} 类`),
         actions(button(`练${category.label} · ${families.length * 2} 题`, () => start(category.id)))
       );
@@ -192,24 +192,32 @@
     const section = panel(`${modeLabel(round.mode)} · 第 ${index + 1}/${questions.length} 题`);
     section.append(el('p', question.prompt, 'practice-prompt'));
     const form = el('form');
-    const hint = el('p', question.answers.length === 2
+    const isAlgebra = !question.fields && question.answers.length === 2;
+    const fieldSpecs = question.fields || (isAlgebra ? [{ label: 'x 的系数' }, { label: '常数项' }] : [{ label: '计算结果' }]);
+    const hasOptions = fieldSpecs.some(field => field.options);
+    const hint = el('p', isAlgebra
       ? '化简成 ax + b 后分别填写两个数，某一项没有就填 0。'
-      : '填写最终结果，可输入整数、小数或分数（例如 -3/4）。', 'practice-muted');
+      : (hasOptions ? '先选择关系符号，再填写各数值。' : '按下方标签填写结果。') +
+        '数值可输入整数、小数或分数（例如 -3/4）。', 'practice-muted');
     hint.id = 'answer-hint';
     const fields = el('div', null, 'practice-fields');
-    const labels = question.answers.length === 2 ? ['x 的系数', '常数项'] : ['计算结果'];
-    const inputs = labels.map(text => {
+    const inputs = fieldSpecs.map(({ label: text, options }) => {
       const label = el('label', text);
-      const input = el('input');
-      input.type = 'text';
-      input.autocomplete = 'off';
-      input.maxLength = 50;
+      const input = el(options ? 'select' : 'input');
+      if (options) input.append(new Option('请选择', ''), ...options.map(value => new Option(value, value)));
+      else {
+        input.type = 'text';
+        input.autocomplete = 'off';
+        input.maxLength = 50;
+      }
       input.setAttribute('aria-describedby', 'answer-hint');
       label.append(input);
       fields.append(label);
       return input;
     });
-    const error = el('p', '请在每个答题框中填写有效的整数、小数或分数。', 'practice-error');
+    const error = el('p', hasOptions
+      ? '请选择所有关系符号，并填写有效的数值。'
+      : '请在每个答题框中填写有效的整数、小数或分数。', 'practice-error');
     error.setAttribute('role', 'alert');
     error.hidden = true;
     const submit = el('button', '提交答案', 'primary');
@@ -230,7 +238,10 @@
       persist(active);
       submit.disabled = true;
       submit.hidden = true;
-      inputs.forEach(input => { input.readOnly = true; });
+      inputs.forEach(input => {
+        if (input.tagName === 'SELECT') input.disabled = true;
+        else input.readOnly = true;
+      });
       const feedback = el('div', null, 'practice-feedback' + (correct ? ' is-correct' : ''));
       feedback.setAttribute('role', 'status');
       feedback.append(

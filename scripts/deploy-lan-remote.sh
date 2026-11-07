@@ -52,14 +52,25 @@ finish() {
       pm2 save --force 9>&- || echo "Could not save the process list." >&2
     fi
   fi
-  rm -f -- "$incoming/kid-learn-$release.tar.gz" "$incoming/deploy-lan-remote.sh" "$incoming/current-release"
+  rm -f -- "$incoming/kid-learn-$release.tar.gz" "$incoming/deploy-lan-remote.sh" \
+    "$incoming/deploy-lan-remote.lf.sh" "$incoming/current-release"
   rmdir -- "$incoming" 2>/dev/null || true
   exit "$status"
 }
 
 trap finish EXIT
 trap 'exit 1' HUP INT TERM
-for command in pm2 python3 curl tar flock; do
+if ! command -v pm2 >/dev/null || ! command -v node >/dev/null; then
+  if [[ "${KID_LEARN_PM2_PROFILE:-}" == 1 ]]; then
+    echo "PM2 or Node.js is missing after loading the SSH user's interactive Bash environment." >&2
+    exit 1
+  fi
+  # fnm and nvm are commonly initialized in the interactive part of ~/.bashrc.
+  export KID_LEARN_PM2_PROFILE=1
+  cd -- "$root"
+  exec bash -ic 'exec bash "$@"' bash "$0" "$@" </dev/null
+fi
+for command in python3 curl tar flock; do
   command -v "$command" >/dev/null || { echo "Required on server: $command" >&2; exit 1; }
 done
 python="$(command -v python3)"
@@ -80,11 +91,26 @@ elif (( running )); then
   exit 1
 fi
 
+if (( !running )) || [[ "$(<"$previous/port")" != "$port" ]]; then
+  "$python" - "$port" <<'PY'
+import socket
+import sys
+
+port = int(sys.argv[1])
+with socket.socket() as sock:
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    try:
+        sock.bind(("0.0.0.0", port))
+    except OSError as error:
+        sys.exit(f"Cannot bind HTTP port {port}: {error}. Choose another port with -Port.")
+PY
+fi
+
 mkdir -p -- "$root/releases"
 mkdir -- "$target"
 mkdir -- "$target/site"
 tar -xzf "$incoming/kid-learn-$release.tar.gz" --no-same-owner -C "$target/site"
-for page in index.html practice/index.html sw.js data/questions.json; do
+for page in index.html practice/index.html practice/grade7.html sw.js data/questions.json data/grade7-questions.json; do
   [[ -s "$target/site/$page" ]] || { echo "Missing release file: $page" >&2; exit 1; }
 done
 printf '%s\n' "$release" > "$target/site/release.txt"

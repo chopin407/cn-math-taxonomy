@@ -1,0 +1,12 @@
+.grade7 select, .grade7 input[type="search"] { max-width: min(100%, 17rem); }
+.grade7 .practice-filters label { min-width: 0; }
+.grade7-check { display: inline-flex; gap: 6px; align-items: center; }
+.grade7-unit { margin: 20px 0; }
+.grade7-links { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.grade7-question summary { padding: 4px 0; overflow-wrap: anywhere; }
+.grade7-question .practice-prompt { display: block; margin: 4px 0 0; white-space: pre-line; }
+.grade7-question .practice-feedback { margin-top: 8px; }
+.grade7-question .practice-feedback p { margin: 0; }
+.grade7-question .practice-actions { margin-top: 12px; }
+.grade7-solution { margin: 12px 0; }
+.grade7-solution li { white-space: pre-line; }

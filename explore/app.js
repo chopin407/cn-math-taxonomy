@@ -435,6 +435,11 @@
       class: 'btn btn-primary btn-lg diag-btn',
       href: diagHref
     }, '诊断这个知识点'));
+    if (subject === 'math' && topic.grade === 7) {
+      parts.push(el('p', null, el('a', {
+        href: '../practice/grade7.html?topic=' + encodeURIComponent(topic.id)
+      }, '七年级数学题库')));
+    }
     parts.push(el('dl', { class: 'meta-grid' },
       metaItem('年级册次', gradeLabel(topic)),
       metaItem('领域', topic.domain),

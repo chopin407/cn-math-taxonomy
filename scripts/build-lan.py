@@ -13,7 +13,10 @@ ROOT = Path(__file__).resolve().parent.parent
 PAGES = ("assets", "explore", "diagnose", "children", "practice")
 WEB_TYPES = {".html", ".js", ".css", ".png", ".svg", ".ico", ".jpg", ".jpeg", ".webp", ".woff", ".woff2"}
 ROOT_FILES = ("index.html", "manifest.webmanifest", "sw.js", "LICENSE")
-DATA_FILES = ("topics.json", "dependencies.json", "cn-curriculum-standards.json", "questions.json", "id-aliases.json")
+DATA_FILES = (
+    "topics.json", "dependencies.json", "cn-curriculum-standards.json", "questions.json",
+    "grade7-questions.json", "id-aliases.json",
+)
 
 
 def main():

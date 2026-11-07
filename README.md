@@ -432,11 +432,21 @@ node scripts/screenshot.js                         # 冒烟测试 + 截图（需
 
 ## 数学计算专项
 
-从首页或孩子档案进入 [计算专项](practice/)。首册为人教版七年级上册，共 48 题，分为易错题、去括号、简便运算、技巧题。可按题型做 6 题，或用 12 题综合练习覆盖本册已收录的计算方法。提交后显示答案和解题步骤。数值题支持等值分数、小数，整式题分别填写化简后的系数和常数项。
+从首页或孩子档案进入 [计算专项](practice/)。人教版七年级上册有 22 种计算方法、88 题，下册有 15 种、60 题。两册均设易错题、去括号、简便运算和技巧题。上册涵盖有理数运算、代数式、整式、一元一次方程和角度换算。下册涵盖平行线角度、开方、坐标、二元一次方程组、不等式和统计计算。
+
+综合练习每种方法出 1 题，分类练习每种方法出 2 题。提交后显示参考答案和解题步骤。数值支持等值分数和小数。整式系数、坐标、方程组解等按标签分栏填写，不等号通过下拉选择。
 
 答错后按计算方法进入错题巩固，可重做最近错题，也可换同类变式。每类连续答对两道不同变式后移出待巩固清单，期间再次答错会重置该类进度。练习首页显示分类正确率和最近 8 轮的逐题记录。每次提交即保存，记录按册次和孩子档案分开，也可选「本机练习」。练习记录保存在当前浏览器，独立于孩子档案的诊断备份。
 
 本地运行 `python -m http.server 8000` 后访问 `http://localhost:8000/practice/`，运行 `node tests/test_practice.js` 校验题库、判题和错题巩固规则。扩展册次时在 `practice/bank.js` 增加题库配置，保留已有的册次、题型和题目编号。
+
+## 七年级数学题库
+
+从首页、计算专项或知识图谱的七年级数学知识点进入 [七年级数学题库](practice/grade7.html)。题库收录 `grade7-math-main` 的人教版上下册 12 章、35 节，共 444 道题（71 道教材例题、209 道分层练习、83 道标为中考题、41 道月考及期中期末题、40 道拓展题）。支持按册、章、节、分类、难度和关键词筛选，小节提供对应的知识图谱链接。
+
+展开题目可查看源资料的解题步骤和易错提醒。自评和待重做错题按档案保存在当前浏览器，重做自评正确后移出待重做列表。源资料的题干、解析和出处标签保存在 `data/grade7-questions.json`，已发现的缺图、条件歧义或解析问题附有核对提示。导入题供学习使用，出处标签沿用原资料。
+
+用 `python scripts/import-grade7.py "<源目录>"` 可重新导入，追加 `--check` 可与仓库数据对照。题目编号沿用源文件的章、节、分类与分类内顺序。
 
 ## 小学知识点（2026-10-19）
 
@@ -600,22 +610,27 @@ python3 -m http.server 8000
 
 ## 部署到局域网（PM2）
 
-在项目根目录运行以下 PowerShell 命令。本机需要 Python 3.8+、Node.js 和 OpenSSH 客户端。
+在项目根目录运行以下 PowerShell 命令。打包需要 Python 3.8+ 和 Node.js，上传发布需要 OpenSSH 客户端。
 
 ```powershell
 # 仅校验并打包，生成 dist/kid-learn.tar.gz
 .\scripts\deploy-lan.ps1 -BuildOnly
 
-# 构建并发布到 kjg@192.168.1.74，默认 HTTP 端口 8080
+# 直接上传并发布已有的 dist/kid-learn.tar.gz
+.\scripts\deploy-lan.ps1 -DeployOnly
+
+# 构建并发布到 kjg@192.168.1.74，默认 HTTP 端口 8090
 .\scripts\deploy-lan.ps1
 
 # 指定端口
-.\scripts\deploy-lan.ps1 -Port 8090
+.\scripts\deploy-lan.ps1 -Port 8091
 ```
 
-服务器需要预装 `python3`、`pm2`、`curl`、`tar`、`flock`，并让它们在非交互式 SSH 的 `PATH` 中可用。确认 `kjg` 可以写入 `/home/kjg/work/kid-learn`，且局域网可访问所选端口。
+`-DeployOnly` 使用已有压缩包，发布后仍保留该文件。可与 `-Port` 同用，例如 `-DeployOnly -Port 8091`。源码更新后，可先运行 `-BuildOnly` 刷新压缩包。
 
-每次发布都会创建 `releases/<版本>/site`，检查 HTTP 响应来自新版本后才写入 `current-release` 并保存 PM2 进程列表。检查失败会尝试恢复上一版。部署后访问 `http://192.168.1.74:8080/`，登录服务器可用 `pm2 status` 和 `pm2 logs kid-learn` 查看状态。服务器要开机自动恢复服务，首次配置时以 `kjg` 运行 `pm2 startup` 并按提示完成系统服务设置。
+服务器需要预装 Node.js、`pm2`、`python3`、`curl`、`tar`、`flock`。普通 SSH 命令找不到 Node.js 或 PM2 时，脚本会加载 `kjg` 的交互 Bash 环境，支持在 `~/.bashrc` 中初始化的 `fnm` 或 `nvm`。确认 `kjg` 可以写入 `/home/kjg/work/kid-learn`，且局域网可访问所选端口。
+
+每次发布都会创建 `releases/<版本>/site`，检查 HTTP 响应来自新版本后才写入 `current-release` 并保存 PM2 进程列表。检查失败会尝试恢复上一版。部署后访问 `http://192.168.1.74:8090/`，登录服务器可用 `pm2 status` 和 `pm2 logs kid-learn` 查看状态。服务器要开机自动恢复服务，首次配置时以 `kjg` 运行 `pm2 startup` 并按提示完成系统服务设置。
 
 局域网包包含计算专项，访问统计在打包时关闭。使用局域网 IP 的 HTTP 地址时，可以在线练习和保存本机记录。PWA 离线缓存需要 HTTPS。
 
@@ -629,7 +644,7 @@ python3 -m http.server 8000
 ./scripts/deploy-cf.sh
 ```
 
-脚本会打包 `index.html`、`sw.js`、`manifest.webmanifest`、`assets/`（含图形库和图标）、`explore/`、`diagnose/`、`children/`、`data/` 中页面用到的文件，部署到 Cloudflare Pages 的 `main` 生产分支。不改动 VPS / Caddy。截图和出题批次不会打进部署包。
+脚本会打包 `index.html`、`sw.js`、`manifest.webmanifest`、`assets/`（含图形库和图标）、`explore/`、`diagnose/`、`children/`、`practice/`、`data/` 中页面用到的文件，部署到 Cloudflare Pages 的 `main` 生产分支。不改动 VPS / Caddy。截图和出题批次不会打进部署包。
 
 ## 许可证 / License
 

@@ -3,7 +3,7 @@
  * 改了 SHELL 或 DATA 列表、或数据结构变了，就把 VERSION 加一。 */
 'use strict';
 
-var VERSION = 'v9';
+var VERSION = 'v11';
 var CACHE = 'cnm-pwa-' + VERSION;
 var SCOPE = self.registration.scope;
 
@@ -22,6 +22,9 @@ var SHELL = [
   'practice/bank.js',
   'practice/engine.js',
   'practice/style.css',
+  'practice/grade7.html',
+  'practice/grade7.js',
+  'practice/grade7.css',
   'children/',
   'children/history.html',
   'children/children.css',
@@ -51,6 +54,7 @@ var DATA = [
   'data/dependencies.json',
   'data/cn-curriculum-standards.json',
   'data/questions.json',
+  'data/grade7-questions.json',
   'data/id-aliases.json'
 ];
 

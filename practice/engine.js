@@ -29,19 +29,20 @@
   }
 
   function judge(question, inputs) {
-    const values = inputs.map(numeric.normalizeText);
+    if (inputs.length !== question.answers.length) return null;
     const valid = /^[+-]?(?:\d+(?:\.\d+)?|\.\d+|\d+\/[+-]?\d+)$/;
-    if (values.length !== question.answers.length || values.some(value =>
-      !valid.test(value) || (/\//.test(value) && Number(value.split('/')[1]) === 0)
-    )) return null;
-    const results = values.map((value, i) => {
+    const results = inputs.map((input, i) => {
+      const options = question.fields?.[i]?.options;
+      if (options) return options.includes(input) ? input === question.answers[i] : null;
+      const value = numeric.normalizeText(input);
+      if (!valid.test(value) || (/\//.test(value) && Number(value.split('/')[1]) === 0)) return null;
       const normalized = value.replace(/^([+-]?)(\d+)\/([+-])(\d+)$/, (_, ns, n, ds, d) =>
         ((ns === '-') !== (ds === '-') ? '-' : '') + n + '/' + d
       );
-      return numeric.judgeQuestion({ type: 'numeric', answer: question.answers[i] }, normalized);
+      const result = numeric.judgeQuestion({ type: 'numeric', answer: question.answers[i] }, normalized);
+      return result.verdict === 'manual' ? null : result.verdict === 'correct';
     });
-    if (results.some(result => result.verdict === 'manual')) return null;
-    return results.every(result => result.verdict === 'correct');
+    return results.includes(null) ? null : results.every(Boolean);
   }
 
   function analyze(book, rounds) {

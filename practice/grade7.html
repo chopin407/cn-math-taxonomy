@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>七年级数学题库 · 中小学·高中知识图谱</title>
+<meta name="description" content="人教版七年级数学上下册题库，按章、节和题目分类查找，查看详解并记录错题。">
+<meta name="theme-color" content="#0f6e62">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/pwa.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="grade7.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="../"><span class="brand-name">中小学·高中知识图谱</span></a>
+  <nav class="site-nav" aria-label="主导航">
+    <div class="page-links">
+      <a class="nav-link" href="../">首页</a>
+      <a class="nav-link" href="../explore/">知识图谱</a>
+      <a class="nav-link" href="./">计算专项</a>
+      <a class="nav-link active" href="grade7.html" aria-current="page">七年级题库</a>
+      <a class="nav-link" href="../children/">档案</a>
+    </div>
+  </nav>
+</header>
+<main class="practice grade7">
+  <h1>七年级数学题库</h1>
+  <p id="grade7-intro">人教版 · 七年级上册和下册</p>
+  <p class="practice-muted">先独立做题，再展开详解自评。题干、解析和出处标签来自 grade7-math-main，部分几何题原资料未附图。</p>
+  <p id="grade7-storage-note" class="storage-note" role="alert" hidden>浏览器存储不可用，部分记录只在当前页面有效。</p>
+  <section id="grade7-controls" class="practice-panel" aria-label="题库筛选" hidden>
+    <div class="practice-filters">
+      <label>练习档案<select id="grade7-profile"><option value="local">本机练习</option></select></label>
+      <label>册次<select id="grade7-volume"><option value="">上下册</option><option>上册</option><option>下册</option></select></label>
+      <label>章<select id="grade7-chapter"></select></label>
+      <label>节<select id="grade7-unit"></select></label>
+      <label>题目分类<select id="grade7-kind"><option value="">全部分类</option></select></label>
+      <label>难度<select id="grade7-difficulty"><option value="">全部难度</option><option>基础</option><option>提高</option><option>拓展</option></select></label>
+      <label>关键词<input id="grade7-search" type="search" placeholder="如：绝对值、方程"></label>
+    </div>
+    <p id="grade7-progress" class="practice-stats" role="status"></p>
+    <label class="grade7-check"><input id="grade7-wrong" type="checkbox"> 只看待重做的错题</label>
+  </section>
+  <section class="practice-panel" aria-labelledby="grade7-results-title">
+    <h2 id="grade7-results-title" tabindex="-1">练习题</h2>
+    <p id="grade7-count" class="practice-muted" role="status">正在加载题库…</p>
+    <div id="grade7-results"></div>
+    <div id="grade7-pages" class="practice-actions" hidden>
+      <button id="grade7-prev" type="button">上一页</button>
+      <button id="grade7-next" type="button">下一页</button>
+    </div>
+  </section>
+  <noscript><p>启用 JavaScript 后即可浏览和练习。</p></noscript>
+</main>
+<script src="../assets/children.js"></script>
+<script src="grade7.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

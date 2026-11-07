@@ -1,0 +1,4 @@
+interface:
+  display_name: "数学出题与错题专练"
+  short_description: "按教材范围出题，支持例题图片变式、知识点分组与错题复测"
+  default_prompt: "用 $math-question-generator 按人教版七年级上册第 2 章生成 10 道分组练习，题单和答案分开。"

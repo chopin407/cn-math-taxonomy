@@ -15,11 +15,13 @@ cp -a "$ROOT/assets" "$DIST/"
 cp -a "$ROOT/explore" "$DIST/"
 cp -a "$ROOT/diagnose" "$DIST/"
 cp -a "$ROOT/children" "$DIST/"
+cp -a "$ROOT/practice" "$DIST/"
 rm -f "$DIST/diagnose/README.md"
 cp "$ROOT/data/topics.json" \
    "$ROOT/data/dependencies.json" \
    "$ROOT/data/cn-curriculum-standards.json" \
    "$ROOT/data/questions.json" \
+   "$ROOT/data/grade7-questions.json" \
    "$ROOT/data/id-aliases.json" \
    "$DIST/data/"
 
