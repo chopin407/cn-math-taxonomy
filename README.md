@@ -430,6 +430,14 @@ node scripts/screenshot.js                         # 冒烟测试 + 截图（需
 
 算法说明、判题规则、URL 参数与局限见 [diagnose/README.md](diagnose/README.md)。首页、知识图谱和诊断页顶部都有同一套导航。每个知识点最多问 2 题，诊断结果只是线索。
 
+## 数学计算专项
+
+从首页或孩子档案进入 [计算专项](practice/)。首册为人教版七年级上册，共 48 题，分为易错题、去括号、简便运算、技巧题。可按题型做 6 题，或用 12 题综合练习覆盖本册已收录的计算方法。提交后显示答案和解题步骤。数值题支持等值分数、小数，整式题分别填写化简后的系数和常数项。
+
+答错后按计算方法进入错题巩固，可重做最近错题，也可换同类变式。每类连续答对两道不同变式后移出待巩固清单，期间再次答错会重置该类进度。练习首页显示分类正确率和最近 8 轮的逐题记录。每次提交即保存，记录按册次和孩子档案分开，也可选「本机练习」。练习记录保存在当前浏览器，独立于孩子档案的诊断备份。
+
+本地运行 `python -m http.server 8000` 后访问 `http://localhost:8000/practice/`，运行 `node tests/test_practice.js` 校验题库、判题和错题巩固规则。扩展册次时在 `practice/bank.js` 增加题库配置，保留已有的册次、题型和题目编号。
+
 ## 小学知识点（2026-10-19）
 
 小学是正式知识点，不是外部节点。id 为 `cnm_p001`–`cnm_p216`，字段与初中正式知识点相同（`external: false`）。初中知识点的 id、名称、题目没有改；只改了原来指向 `cnm_ext_*` 的先修边，改成指向具体的小学知识点（一条旧边可以拆成多条，例如百分数统计图同时指向百分数和几种统计图）。
@@ -589,6 +597,27 @@ python3 -m http.server 8000
 2. 请课程专家审核 `standards` 映射（尤其 inferred，以及第一至三学段尚未与教育部 PDF 逐页核对的条文），并考虑为仍无对应知识点的课标条款补点。
 3. 用真实学生答题数据校准诊断题与先修强度。
 
+
+## 部署到局域网（PM2）
+
+在项目根目录运行以下 PowerShell 命令。本机需要 Python 3.8+、Node.js 和 OpenSSH 客户端。
+
+```powershell
+# 仅校验并打包，生成 dist/kid-learn.tar.gz
+.\scripts\deploy-lan.ps1 -BuildOnly
+
+# 构建并发布到 kjg@192.168.1.74，默认 HTTP 端口 8080
+.\scripts\deploy-lan.ps1
+
+# 指定端口
+.\scripts\deploy-lan.ps1 -Port 8090
+```
+
+服务器需要预装 `python3`、`pm2`、`curl`、`tar`、`flock`，并让它们在非交互式 SSH 的 `PATH` 中可用。确认 `kjg` 可以写入 `/home/kjg/work/kid-learn`，且局域网可访问所选端口。
+
+每次发布都会创建 `releases/<版本>/site`，检查 HTTP 响应来自新版本后才写入 `current-release` 并保存 PM2 进程列表。检查失败会尝试恢复上一版。部署后访问 `http://192.168.1.74:8080/`，登录服务器可用 `pm2 status` 和 `pm2 logs kid-learn` 查看状态。服务器要开机自动恢复服务，首次配置时以 `kjg` 运行 `pm2 startup` 并按提示完成系统服务设置。
+
+局域网包包含计算专项，访问统计在打包时关闭。使用局域网 IP 的 HTTP 地址时，可以在线练习和保存本机记录。PWA 离线缓存需要 HTTPS。
 
 ## 部署（Cloudflare Pages）
 

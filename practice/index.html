@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>计算专项 · 中小学·高中知识图谱</title>
+<meta name="description" content="七年级上册人教版数学计算专项，按题型练习，记录错题并用同类变式巩固。">
+<meta name="theme-color" content="#0f6e62">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/pwa.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="../"><span class="brand-name">中小学·高中知识图谱</span></a>
+  <nav class="site-nav" aria-label="主导航">
+    <div class="page-links">
+      <a class="nav-link" href="../">首页</a>
+      <a class="nav-link" href="../explore/">知识图谱</a>
+      <a class="nav-link" href="../diagnose/">诊断</a>
+      <a class="nav-link active" href="./" aria-current="page">计算专项</a>
+      <a class="nav-link" href="../children/">档案</a>
+    </div>
+  </nav>
+</header>
+<main class="practice">
+  <h1>数学计算专项</h1>
+  <p id="storage-note" class="storage-note" role="alert" hidden></p>
+  <section class="practice-panel" id="practice-setup" aria-label="练习范围">
+    <div class="practice-filters">
+      <label>年级与教材<select id="practice-book"></select></label>
+      <label>练习档案<select id="practice-profile" aria-describedby="practice-privacy"></select></label>
+    </div>
+    <p id="practice-privacy" class="practice-muted">答题记录保存在当前浏览器，按档案和册次分开。<a href="../children/">管理孩子档案</a></p>
+  </section>
+  <div id="practice-view"></div>
+  <noscript><p>启用 JavaScript 后即可开始练习。</p></noscript>
+</main>
+<script src="../assets/children.js"></script>
+<script src="../diagnose/engine.js"></script>
+<script src="bank.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>
